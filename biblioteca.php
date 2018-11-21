@@ -1,23 +1,48 @@
 <?php
 $mysqli = new mysqli("localhost", "root", "", "biblioteca");
-$mysqli -> set_charset("utf8mb4");
+$mysqli->set_charset("utf8mb4");
 if (!$mysqli) {
     echo "Error: No se pudo connectant a MySQL." . PHP_EOL;
-   } else {
-    echo "S'ha connectat." . PHP_EOL; 
-}
-if (mysqli_connect_errno()) { printf("Error: %s\n", mysqli_connect_error()); exit(); }
+} 
 
-$orderby = "NOM_AUT ASC";
-if(isset($_POST['ID_AUT_DESC'])){
-
-    $orderby = "NOM_AUT DESC";
+if (mysqli_connect_errno()) {
+    printf("Error: %s\n", mysqli_connect_error());
+    exit();
 }
 
-if(isset($_POST['ID_AUT_ASC'])){
+$orderby = "ID_AUT ASC";
+$autor = "";
+
+if (isset($_POST['ID_AUT_ASC'])) {
+    
+    $orderby = "ID_AUT ASC";
+}
+
+if (isset($_POST['ID_AUT_DESC'])) {
+    
+    $orderby = "ID_AUT DESC";
+}
+
+if (isset($_POST['NOM_AUT_ASC'])) {
     
     $orderby = "NOM_AUT ASC";
 }
+
+if (isset($_POST['NOM_AUT_DESC'])) {
+    
+    $orderby = "NOM_AUT DESC";
+}
+
+
+if (isset($_POST['bcerca'])) {
+    
+    $autor = $_POST['cerca'];
+    $query = "SELECT * FROM autors WHERE NOM_AUT LIKE '%" .$autor. "%'";
+} else {
+    $query = "SELECT * FROM autors ORDER BY $orderby";
+}
+
+
 ?>
 
 <!DOCTYPE html>
@@ -29,11 +54,15 @@ integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLP
 </head>
 <body>
     <h1 align="center" >LLISTAT</h1>
-    <form action="" method="post">
+    <form action="" method="POST">
     
-    <button type="button" class="btn btn-primary" name="ID_AUT_ASC">Autor ASC</button>
-    <button type="button" class="btn btn-primary" name="ID_AUT_DESC">Autor DESC</button>
-    </form>
+    <button  class="btn btn-primary" name="ID_AUT_ASC">ID ASC</button>
+    <button  class="btn btn-primary" name="ID_AUT_DESC">ID DESC</button>
+
+    <button  class="btn btn-primary" name="NOM_AUT_ASC">NOM ASC</button>
+    <button  class="btn btn-primary" name="NOM_AUT_DESC">NOM DESC</button>
+    <input type="text" name="cerca" placeholder="Cerca.." >
+    <button  class="btn btn-primary" name="bcerca">CERCA</button>
     <table class="table">
     <thead class="thead-dark">
     <tr>
@@ -42,28 +71,25 @@ integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLP
     </tr>
 
 <?php
-    $query = "SELECT ID_AUT , NOM_AUT FROM autors ORDER by $orderby";
-   
-    if ($result = $mysqli->query($query)) {
 
-        while ($row = $result->fetch_assoc()) {
+if ($result = $mysqli->query($query)) {
     
-        echo'
+    while ($row = $result->fetch_assoc()) {
+        
+        echo '
             <tr>
-                <td>'.$row["ID_AUT"].'</td>
-                <td>'.$row["NOM_AUT"].'</td>
+                <td>' . $row["ID_AUT"] . '</td>
+                <td>' . $row["NOM_AUT"] . '</td>
             
             </tr>';
-        }
+    }
     $result->free();
+    
+}
+$mysqli->close();
 
-   }
-   $mysqli->close();
-   
 ?>
-    </table>
+   </table>
+    </form>
 </body>
 </html>
-
-
-
