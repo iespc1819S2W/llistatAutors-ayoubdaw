@@ -42,6 +42,20 @@ if (isset($_POST['bcerca'])) {
     $query = "SELECT * FROM autors ORDER BY $orderby";
 }
 
+//PAGINACIÓ
+$totalregistros = mysqli_num_rows($query);
+$registrosporpagina = 10;
+
+if(!isset($_GET["pagina"])){
+	$pagina=1;
+	$limit_inicio=($pagina*10)-10;//multiplicamos la página en la que estamos 
+                                  //por el número de resultados y le restamos el número de resultados
+}else{
+	$pagina=$_GET["pagina"];
+	$limit_inicio=($pagina*10)-10;//indicamos a partir de qué resultado empieza la página
+}
+$consultapagina= "SELECT * FROM autors ORDER BY ID_AUT LIMIT ".$limit_inicio.",".$registrosporpagina;
+
 
 ?>
 
@@ -89,6 +103,7 @@ if ($result = $mysqli->query($query)) {
 $mysqli->close();
 
 ?>
+
    </table>
     </form>
 </body>
