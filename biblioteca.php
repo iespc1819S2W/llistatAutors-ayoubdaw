@@ -37,22 +37,24 @@ if (isset($_POST['NOM_AUT_DESC'])) {
 if (isset($_POST['bcerca'])) {
     
     $autor = $_POST['cerca'];
-    $query = "SELECT * FROM autors WHERE NOM_AUT LIKE '%" .$autor. "%'";
+    $query = "SELECT * FROM autors WHERE NOM_AUT LIKE '%" .$autor. "%' LIMIT 20";
 } else {
-    $query = "SELECT * FROM autors ORDER BY $orderby";
+    $query = "SELECT * FROM autors ORDER BY $orderby LIMIT 20";
 }
 
+//$resultado = mysql_query("SELECT * FROM autors");
+//$resultat = "SELECT * FROM autors ORDER BY $orderby"
 //PAGINACIÓ
 $totalregistros = mysqli_num_rows($query);
 $registrosporpagina = 10;
 
 if(!isset($_GET["pagina"])){
 	$pagina=1;
-	$limit_inicio=($pagina*10)-10;//multiplicamos la página en la que estamos 
-                                  //por el número de resultados y le restamos el número de resultados
+	$limit_inicio=($pagina*10)-10;
+                                  
 }else{
 	$pagina=$_GET["pagina"];
-	$limit_inicio=($pagina*10)-10;//indicamos a partir de qué resultado empieza la página
+	$limit_inicio=($pagina*10)-10;
 }
 $consultapagina= "SELECT * FROM autors ORDER BY ID_AUT LIMIT ".$limit_inicio.",".$registrosporpagina;
 
