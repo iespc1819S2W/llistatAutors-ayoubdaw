@@ -5,13 +5,27 @@ if (!$mysqli) {
     echo "Error: No se pudo connectant a MySQL." . PHP_EOL;
 } 
 
-if (mysqli_connect_errno()) {
-    printf("Error: %s\n", mysqli_connect_error());
-    exit();
+$orderby = "ID_AUT ASC";
+
+if(isset($_POST['orderby'])){
+    $orderby = $_POST['orderby'];
 }
 
-$orderby = "ID_AUT ASC";
-$autor = "";
+$cerca = "";
+if(isset($_POST['cerca'])){
+    $cerca = $_POST['cerca'];
+}
+
+$limitPag = 20;
+$pagina = 0;
+
+if(isset($_POST['pagina'])){
+    $pagina = $_POST['pagina'];
+}
+
+$result = $mysqli->query("SELECT * FROM autors WHERE NOM_AUT LIKE '%" .$cerca. "%' OR ID_AUT LIKE '% . $cerca .  %'");
+$numRegistres = mysqli_num_rows($result);
+$numPag = ceil($numRegistres / $limitPag);
 
 if (isset($_POST['ID_AUT_ASC'])) {
     
@@ -34,31 +48,36 @@ if (isset($_POST['NOM_AUT_DESC'])) {
 }
 
 
-if (isset($_POST['bcerca'])) {
+if(isset($_POST['primer'])){
     
-    $autor = $_POST['cerca'];
-    $query = "SELECT * FROM autors WHERE NOM_AUT LIKE '%" .$autor. "%' LIMIT 20";
-} else {
-    $query = "SELECT * FROM autors ORDER BY $orderby LIMIT 20";
+    $pagina = 0;
 }
 
-//$resultado = mysql_query("SELECT * FROM autors");
-//$resultat = "SELECT * FROM autors ORDER BY $orderby"
-//PAGINACIÓ
-$totalregistros = mysqli_num_rows($query);
-$registrosporpagina = 10;
 
-if(!isset($_GET["pagina"])){
-	$pagina=1;
-	$limit_inicio=($pagina*10)-10;
-                                  
-}else{
-	$pagina=$_GET["pagina"];
-	$limit_inicio=($pagina*10)-10;
+if(isset($_POST['seguent'])){
+    
+    if ($pagina <= $numPag){
+
+        $pagina = $pagina +1;
+    }
 }
-$consultapagina= "SELECT * FROM autors ORDER BY ID_AUT LIMIT ".$limit_inicio.",".$registrosporpagina;
+
+if(isset($_POST['anterior'])){
+    
+    if ($pagina > 0 ){
+
+        $pagina = $pagina -1;
+    } 
+}
+
+if(isset($_POST['darrer'])){
+    
+    $pagina = $numPag -1;
+}
 
 
+$tuplainici = $pagina * $limitPag;
+$query = "SELECT * FROM autors WHERE NOM_AUT LIKE '%$cerca%' OR ID_AUT LIKE '%$cerca%' ORDER BY $orderby LIMIT $tuplainici , $limitPag ";
 ?>
 
 <!DOCTYPE html>
@@ -77,8 +96,14 @@ integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLP
 
     <button  class="btn btn-primary" name="NOM_AUT_ASC">NOM ASC</button>
     <button  class="btn btn-primary" name="NOM_AUT_DESC">NOM DESC</button>
-    <input type="text" name="cerca" placeholder="Cerca.." >
+    <input type="text" name="cerca" id="cerca"  value="<?=$cerca?>">
     <button  class="btn btn-primary" name="bcerca">CERCA</button>
+    <button  class="btn btn-primary" name="primer"><<<</button>
+    <button  class="btn btn-primary" name="anterior"><</button>
+    <button  class="btn btn-primary" name="seguent">></button>
+    <button  class="btn btn-primary" name="darrer">>>></button>
+    <input type="hidden"  value="<?=$pagina?>" name="pagina" id="pagina">
+    <input type="hidden"  value="<?=$orderby?>" name="orderby" id="orderby">
     <table class="table">
     <thead class="thead-dark">
     <tr>
@@ -87,7 +112,6 @@ integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLP
     </tr>
 
 <?php
-
 if ($result = $mysqli->query($query)) {
     
     while ($row = $result->fetch_assoc()) {
