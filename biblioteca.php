@@ -85,23 +85,31 @@ $query = "SELECT * FROM autors WHERE NOM_AUT LIKE '%$cerca%' OR ID_AUT LIKE '%$c
 <head>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" 
 integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" 
+integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+
+
     <title>Llistat Autors</title>
 </head>
 <body>
     <h1 align="center" >LLISTAT</h1>
+    <div class="container">
     <form action="" method="POST">
-    
-    <button  class="btn btn-primary" name="ID_AUT_ASC">ID ASC</button>
-    <button  class="btn btn-primary" name="ID_AUT_DESC">ID DESC</button>
+    <center>
+    <button  class="btn btn-dark" name="ID_AUT_ASC">ID ASC</button>
+    <button  class="btn btn-dark" name="ID_AUT_DESC">ID DESC</button>
 
-    <button  class="btn btn-primary" name="NOM_AUT_ASC">NOM ASC</button>
-    <button  class="btn btn-primary" name="NOM_AUT_DESC">NOM DESC</button>
+    <button  class="btn btn-dark" name="NOM_AUT_ASC">NOM ASC</button>
+    <button  class="btn btn-dark" name="NOM_AUT_DESC">NOM DESC</button>
     <input type="text" name="cerca" id="cerca"  value="<?=$cerca?>">
-    <button  class="btn btn-primary" name="bcerca">CERCA</button>
-    <button  class="btn btn-primary" name="primer"><<<</button>
-    <button  class="btn btn-primary" name="anterior"><</button>
-    <button  class="btn btn-primary" name="seguent">></button>
-    <button  class="btn btn-primary" name="darrer">>>></button>
+    <button  class="btn btn-dark" name="bcerca">CERCA</button>
+    <button  class="btn btn-dark" name="primer"><<<</button>
+    <button  class="btn btn-dark" name="anterior"><</button>
+    <button  class="btn btn-dark" name="seguent">></button>
+    <button  class="btn btn-dark" name="darrer">>>></button>
+    </center>
+    <br>
+    
     <input type="hidden"  value="<?=$pagina?>" name="pagina" id="pagina">
     <input type="hidden"  value="<?=$orderby?>" name="orderby" id="orderby">
     <table class="table">
@@ -119,7 +127,7 @@ if ($result = $mysqli->query($query)) {
         echo '
             <tr>
                 <td>' . $row["ID_AUT"] . '</td>
-                <td>' . $row["NOM_AUT"] . '</td>
+                <td>' . $row["NOM_AUT"]   . '<button  class="btn btn-danger" style="float: right" name="borrar"><i class="fas fa-trash"></i></button>' . '<button  class="btn btn-dark" style="float: right" name="editar"><i class="fas fa-edit"></i></button>' . '</td>
             
             </tr>';
     }
@@ -132,5 +140,6 @@ $mysqli->close();
 
    </table>
     </form>
+    </div>
 </body>
 </html>
