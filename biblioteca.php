@@ -6,7 +6,6 @@ if (!$mysqli) {
 } 
 
 $orderby = "ID_AUT ASC";
-
 if(isset($_POST['orderby'])){
     $orderby = $_POST['orderby'];
 }
@@ -75,6 +74,21 @@ if(isset($_POST['darrer'])){
     $pagina = $numPag -1;
 }
 
+if(isset($_POST['borrar'])){
+
+    $idBorrar = $_POST['borrar'];
+    $result = $mysqli->query("DELETE FROM autors WHERE ID_AUT LIKE $idBorrar");
+
+    
+}
+
+if(isset($_POST['editar'])){
+
+    $idEditar = $_POST['editar'];
+
+    
+}
+
 
 $tuplainici = $pagina * $limitPag;
 $query = "SELECT * FROM autors WHERE NOM_AUT LIKE '%$cerca%' OR ID_AUT LIKE '%$cerca%' ORDER BY $orderby LIMIT $tuplainici , $limitPag ";
@@ -127,7 +141,9 @@ if ($result = $mysqli->query($query)) {
         echo '
             <tr>
                 <td>' . $row["ID_AUT"] . '</td>
-                <td>' . $row["NOM_AUT"]   . '<button  class="btn btn-danger" style="float: right" name="borrar"><i class="fas fa-trash"></i></button>' . '<button  class="btn btn-dark" style="float: right" name="editar"><i class="fas fa-edit"></i></button>' . '</td>
+                <td>' . $row["NOM_AUT"]   . '<button  class="btn btn-danger"; style="float: right"; name="borrar"; value="'.$row["ID_AUT"].'">
+                <i class="fas fa-trash"></i></button>' . '<button  class="btn btn-dark" style="float: right" name="editar" value="'.$row["ID_AUT"].'">
+                <i class="fas fa-edit"></i></button>' . '</td>
             
             </tr>';
     }
