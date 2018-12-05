@@ -3,93 +3,59 @@ $mysqli = new mysqli("localhost", "root", "", "biblioteca");
 $mysqli->set_charset("utf8mb4");
 if (!$mysqli) {
     echo "Error: No se pudo connectant a MySQL." . PHP_EOL;
-} 
-
+}
 $orderby = "ID_AUT ASC";
-if(isset($_POST['orderby'])){
+if (isset($_POST['orderby'])) {
     $orderby = $_POST['orderby'];
 }
-
 $cerca = "";
-if(isset($_POST['cerca'])){
+if (isset($_POST['cerca'])) {
     $cerca = $_POST['cerca'];
 }
-
 $limitPag = 20;
 $pagina = 0;
-
-if(isset($_POST['pagina'])){
+if (isset($_POST['pagina'])) {
     $pagina = $_POST['pagina'];
 }
-
-$result = $mysqli->query("SELECT * FROM autors WHERE NOM_AUT LIKE '%" .$cerca. "%' OR ID_AUT LIKE '% . $cerca .  %'");
+$result = $mysqli->query("SELECT * FROM autors WHERE NOM_AUT LIKE '%" . $cerca . "%' OR ID_AUT LIKE '% . $cerca .  %'");
 $numRegistres = mysqli_num_rows($result);
 $numPag = ceil($numRegistres / $limitPag);
-
 if (isset($_POST['ID_AUT_ASC'])) {
-    
     $orderby = "ID_AUT ASC";
 }
-
 if (isset($_POST['ID_AUT_DESC'])) {
-    
     $orderby = "ID_AUT DESC";
 }
-
 if (isset($_POST['NOM_AUT_ASC'])) {
-    
     $orderby = "NOM_AUT ASC";
 }
-
 if (isset($_POST['NOM_AUT_DESC'])) {
-    
     $orderby = "NOM_AUT DESC";
 }
-
-
-if(isset($_POST['primer'])){
-    
+if (isset($_POST['primer'])) {
     $pagina = 0;
 }
-
-
-if(isset($_POST['seguent'])){
-    
-    if ($pagina <= $numPag){
-
-        $pagina = $pagina +1;
+if (isset($_POST['seguent'])) {
+    if ($pagina <= $numPag) {
+        $pagina = $pagina + 1;
     }
 }
-
-if(isset($_POST['anterior'])){
-    
-    if ($pagina > 0 ){
-
-        $pagina = $pagina -1;
-    } 
+if (isset($_POST['anterior'])) {
+    if ($pagina > 0) {
+        $pagina = $pagina - 1;
+    }
 }
-
-if(isset($_POST['darrer'])){
-    
-    $pagina = $numPag -1;
+if (isset($_POST['darrer'])) {
+    $pagina = $numPag - 1;
 }
-
-if(isset($_POST['borrar'])){
-
+if (isset($_POST['borrar'])) {
     $idBorrar = $_POST['borrar'];
     $result = $mysqli->query("DELETE FROM autors WHERE ID_AUT LIKE $idBorrar");
-
-    
 }
-
-if(isset($_POST['editar'])){
-
+$idEditar = 0;
+if (isset($_POST['editar'])) {
     $idEditar = $_POST['editar'];
-
-    
 }
-
-
 $tuplainici = $pagina * $limitPag;
 $query = "SELECT * FROM autors WHERE NOM_AUT LIKE '%$cerca%' OR ID_AUT LIKE '%$cerca%' ORDER BY $orderby LIMIT $tuplainici , $limitPag ";
 ?>
@@ -101,9 +67,8 @@ $query = "SELECT * FROM autors WHERE NOM_AUT LIKE '%$cerca%' OR ID_AUT LIKE '%$c
 integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" 
 integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+<title>Llistat Autors</title>
 
-
-    <title>Llistat Autors</title>
 </head>
 <body>
     <h1 align="center" >LLISTAT</h1>
@@ -115,7 +80,8 @@ integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeV
 
     <button  class="btn btn-dark" name="NOM_AUT_ASC">NOM ASC</button>
     <button  class="btn btn-dark" name="NOM_AUT_DESC">NOM DESC</button>
-    <input type="text" name="cerca" id="cerca"  value="<?=$cerca?>">
+    <input type="text" name="cerca" id="cerca"  value="<?=$cerca
+?>">
     <button  class="btn btn-dark" name="bcerca">CERCA</button>
     <button  class="btn btn-dark" name="primer"><<<</button>
     <button  class="btn btn-dark" name="anterior"><</button>
@@ -124,34 +90,51 @@ integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeV
     </center>
     <br>
     
-    <input type="hidden"  value="<?=$pagina?>" name="pagina" id="pagina">
-    <input type="hidden"  value="<?=$orderby?>" name="orderby" id="orderby">
+    <input type="hidden"  value="<?=$pagina
+?>" name="pagina" id="pagina">
+    <input type="hidden"  value="<?=$orderby
+?>" name="orderby" id="orderby">
     <table class="table">
     <thead class="thead-dark">
     <tr>
         <th scope="col">ID AUTOR</th>
         <th scope="col">NOM AUTOR</th>
+        <th scope="col"></th>
     </tr>
 
-<?php
-if ($result = $mysqli->query($query)) {
-    
-    while ($row = $result->fetch_assoc()) {
+<?php if ($result = $mysqli->query($query)) {
+    while ($row = $result->fetch_assoc()) { ?>
+     
+        <tr>
+            <td id="idAut"><?php echo $row["ID_AUT"] ?></td>
+            <td id="nomAut">
+                <?php
+        if ($idEditar == $row["ID_AUT"]) { ?>
         
-        echo '
-            <tr>
-                <td>' . $row["ID_AUT"] . '</td>
-                <td>' . $row["NOM_AUT"]   . '<button  class="btn btn-danger"; style="float: right"; name="borrar"; value="'.$row["ID_AUT"].'">
-                <i class="fas fa-trash"></i></button>' . '<button  class="btn btn-dark" style="float: right" name="editar" value="'.$row["ID_AUT"].'">
-                <i class="fas fa-edit"></i></button>' . '</td>
-            
-            </tr>';
+                        <input type="text" value="<?=$row["NOM_AUT"] ?>"> 
+                        <button  class="btn btn-danger" style="float: right" name="cancelar">CANCELAR</button>
+                        <button  class="btn btn-success" style="float: right" name="envia">ENVIA</button>
+                      
+                   <?php $idEditar = 0;
+        } else {
+            echo $row["NOM_AUT"]; ?>
+                    <button  class="btn btn-danger" style="float: right" name="borrar" value="<?=$row["ID_AUT"] ?>">
+                    <i class="fas fa-trash"></i>
+                    </button>
+    
+                    <button  class="btn btn-dark" style="float: right" name="editar" value="<?=$row["ID_AUT"] ?>">
+                    <i class="fas fa-edit"></i>
+                    </button>
+                    <?php
+        } ?>
+            </td>
+
+        </tr>
+<?php
     }
     $result->free();
-    
 }
 $mysqli->close();
-
 ?>
 
    </table>
