@@ -68,7 +68,7 @@ if (isset($_POST['envia'])) {
 
 $autor = "";
 if(isset($_POST['confirmar'])){
-    
+
     $idInserta = $_POST['insertaid'];
     $autor = $_POST['insertainp'];
     $result = $mysqli->query("INSERT INTO autors(ID_AUT,NOM_AUT) VALUES ($idInserta,'$autor')");
@@ -116,7 +116,7 @@ integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeV
         <button class="btn btn-info" name="confirmar">CONFIRMA</button>
         
    <?php } ?>
-    
+    <br><br>
     
     <input type="hidden"  value="<?=$pagina?>" name="pagina" id="pagina">
     <input type="hidden"  value="<?=$orderby?>" name="orderby" id="orderby">
