@@ -55,7 +55,26 @@ if (isset($_POST['borrar'])) {
 $idEditar = 0;
 if (isset($_POST['editar'])) {
     $idEditar = $_POST['editar'];
+    
 }
+
+$valor = "";
+if (isset($_POST['envia'])) {
+    $valor = $_POST['nomInp'];
+    $idEnvia = $_POST['envia'];
+    $result = $mysqli->query("UPDATE autors SET NOM_AUT = '$valor' WHERE ID_AUT = $idEnvia");
+    $cerca = $valor;
+}
+
+$autor = "";
+if(isset($_POST['confirmar'])){
+    
+    $idInserta = $_POST['insertaid'];
+    $autor = $_POST['insertainp'];
+    $result = $mysqli->query("INSERT INTO autors(ID_AUT,NOM_AUT) VALUES ($idInserta,'$autor')");
+    $cerca = $autor;
+}
+
 $tuplainici = $pagina * $limitPag;
 $query = "SELECT * FROM autors WHERE NOM_AUT LIKE '%$cerca%' OR ID_AUT LIKE '%$cerca%' ORDER BY $orderby LIMIT $tuplainici , $limitPag ";
 ?>
@@ -77,9 +96,9 @@ integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeV
     <center>
     <button  class="btn btn-dark" name="ID_AUT_ASC">ID ASC</button>
     <button  class="btn btn-dark" name="ID_AUT_DESC">ID DESC</button>
-
     <button  class="btn btn-dark" name="NOM_AUT_ASC">NOM ASC</button>
     <button  class="btn btn-dark" name="NOM_AUT_DESC">NOM DESC</button>
+    <button  class="btn btn-info" name="inserta">INSERTA</button>
     <input type="text" name="cerca" id="cerca"  value="<?=$cerca
 ?>">
     <button  class="btn btn-dark" name="bcerca">CERCA</button>
@@ -89,11 +108,18 @@ integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeV
     <button  class="btn btn-dark" name="darrer">>>></button>
     </center>
     <br>
+    <?php 
     
-    <input type="hidden"  value="<?=$pagina
-?>" name="pagina" id="pagina">
-    <input type="hidden"  value="<?=$orderby
-?>" name="orderby" id="orderby">
+    if (isset($_POST['inserta'])) { ?>
+        Inserta el ID <input type="text" name="insertaid">
+        Inserta el nom del autor: <input type="text" name="insertainp">
+        <button class="btn btn-info" name="confirmar">CONFIRMA</button>
+        
+   <?php } ?>
+    
+    
+    <input type="hidden"  value="<?=$pagina?>" name="pagina" id="pagina">
+    <input type="hidden"  value="<?=$orderby?>" name="orderby" id="orderby">
     <table class="table">
     <thead class="thead-dark">
     <tr>
@@ -104,16 +130,16 @@ integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeV
 
 <?php if ($result = $mysqli->query($query)) {
     while ($row = $result->fetch_assoc()) { ?>
-     
-        <tr>
+
+        <tr> 
             <td id="idAut"><?php echo $row["ID_AUT"] ?></td>
             <td id="nomAut">
-                <?php
-        if ($idEditar == $row["ID_AUT"]) { ?>
+                
+            <?php if ($idEditar == $row["ID_AUT"]) { ?>
         
-                        <input type="text" value="<?=$row["NOM_AUT"] ?>"> 
+                        <input type="text" name="nomInp" value="<?=$row["NOM_AUT"] ?>"> 
                         <button  class="btn btn-danger" style="float: right" name="cancelar">CANCELAR</button>
-                        <button  class="btn btn-success" style="float: right" name="envia">ENVIA</button>
+                        <button  class="btn btn-success" style="float: right" name="envia" value="<?=$row["ID_AUT"] ?>">CONFIRMA</button>
                       
                    <?php $idEditar = 0;
         } else {
